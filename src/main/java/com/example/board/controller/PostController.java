@@ -9,8 +9,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Controller
 public class PostController {
@@ -29,13 +33,14 @@ public class PostController {
     }
 
     @PostMapping("/posts/new")
-    public String create(PostForm postForm){
+    public String create(PostForm postForm, HttpServletRequest request){
+        HttpSession session = request.getSession();
         Post post = new Post();
         post.setTitle(postForm.getTitle());
         post.setContents(postForm.getContents());
-        post.setEmail(postForm.getEmail());
+        post.setEmail(session.getAttribute("email").toString());
         post.setCreateDate(LocalDateTime.now());
-        Author a1 = authorService.findByEmail(postForm.getEmail()).orElse(null);
+        Author a1 = authorService.findByEmail(post.getEmail()).orElse(null);
         post.setAuthor(a1);
         postService.create(post);
         return "redirect:/";
@@ -53,6 +58,25 @@ public class PostController {
         model.addAttribute("post",  postService.findById(id).orElse(null));
 
         return "posts/postDetail";
+    }
+
+    @GetMapping("posts/api/findAllFetchJoin")
+    @ResponseBody
+    public List<Post> findAllFetchJoin(){
+        List<Post> result = postService.findAllFetchJoin();
+        for(Post a : result){
+            System.out.println(a);
+            System.out.println(a.getAuthor().getName());
+        }
+        return result;
+    }
+
+
+    @GetMapping("/posts/api/findAll")
+    @ResponseBody
+    public List<Post> postApiList(Model model){
+//        key, value 값으로 넘겨줘야한다.
+        return postService.findAll();
     }
 
 }

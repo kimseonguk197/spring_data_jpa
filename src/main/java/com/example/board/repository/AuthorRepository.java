@@ -2,6 +2,7 @@ package com.example.board.repository;
 
 import com.example.board.domain.Author;
 import com.example.board.domain.Post;
+import com.example.board.domain.Role;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,14 +18,12 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 //    findByA : 스프링에서 A로 조건을 걸어 조회하는 기능을 제공
 //    findByAandB : 이러한 규칙을 가지고 다양한 조회 가능
     Optional<Author> findByEmail(String email);
+    List<Author> findByRole(Role role);
 
-//    join방법. jpql
-    @Query("select a from Author a join fetch a.posts p where a.id = :id")
+//    jpql방식
+    @Query("select distinct a from Author a join fetch a.posts where a.id = :id")
     List<Author> findAllFetchJoinById(@Param("id")Long id);
-
-
-    //    join방법. jpql
-    @Query("select a from Author a left join fetch a.posts p")
+    @Query("select distinct a from Author a left join fetch a.posts")
     List<Author> findAllFetchJoin();
 
 }

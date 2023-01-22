@@ -14,18 +14,30 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="page-header">
-      <h1>Board</h1>
-    </div>
-    <div class="pull-right" style="width:100px;">
-      <a href="/posts" class="btn btn-primary btn-block">게시판</a>
-    </div>
-    <div class="pull-right" style="width:100px;">
-      <a href="/authors" class="btn btn-primary btn-block">회원관리</a>
-    </div>
-    <br/><br/><br/>
+
+<div class="container">
+  <div class="page-header">
+    <h1>Board</h1>
+  </div>
+  <div class="pull-right" style="width:100px;">
+    <td th:if="${session.greeting}!=null" ><a href="doLogout" class="btn btn-primary btn-block">로그아웃</a></td>
+    <td th:if="${session.greeting}==null" ><a href="/authors/login" class="btn btn-primary btn-block">로그인</a></td>
 
   </div>
+  <div class="pull-right" style="width:100px;">
+    <a href="/authors/new" class="btn btn-primary btn-block">회원가입</a>
+  </div>
+  <div class="pull-right" style="width:100px;">
+    <a href="/posts" class="btn btn-primary btn-block">게시판</a>
+  </div>
+  <div class="pull-right" style="width:100px;">
+    <a href="/authors" class="btn btn-primary btn-block">회원관리</a>
+  </div>
+  <br/><br/>
+  <div class="pull-right" style="width:200px;">
+    <td th:text="${session.greeting}"></td>
+  </div>
+
+</div>
 </body>
 </html>

@@ -31,12 +31,13 @@
       <table class="table table-hover">
         <thead>
         <tr>
-          <th class="col-md-2">id</th>
-          <th class="col-md-3">이름</th>
-          <th class="col-md-4">email</th>
-          <th class="col-md-4">상세보기</th>
+          <th class="col-md-1">id</th>
+          <th class="col-md-2">이름</th>
+          <th class="col-md-3">email</th>
+          <th class="col-md-4">상세</th>
           <th class="col-md-5">작성글수</th>
-<!--          <th class="col-md-5">가입일</th>-->
+          <th class="col-md-5">Role</th>
+          <th class="col-md-6">가입일</th>
         </tr>
         </thead>
         <tbody>
@@ -45,9 +46,10 @@
           <td th:text="${author.name}"></td>
           <td th:text="${author.email}"></td>
           <td><a th:href="@{'authors/findById?id=' + ${author.id}}">상세보기</a></td>
-          <td th:text="${author.count}"></td>
-<!--          <td th:text="${author.createdDate} ?-->
-<!--                      ${#temporals.format(board.createdDate,'yyyy-MM-dd HH:mm')} : ${board.createdDate}"></td>-->
+          <td th:text="${author.postcounts}"></td>
+          <td th:text="${author.role}"></td>
+          <td th:text="${author.createDate} ?
+                      ${#temporals.format(author.createDate,'yyyy-MM-dd HH:mm')} : ${author.createDate}"></td>
         </tr>
         </tbody>
       </table>

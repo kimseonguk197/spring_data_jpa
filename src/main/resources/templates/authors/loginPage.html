@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <title>Board</title>
   <link rel="stylesheet"
-        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+        integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+        crossorigin="anonymous">
   <style>
+    /*html{position:relative;min-height:100%;}*/
     body{
       margin-bottom:60px;
     }
@@ -21,36 +24,35 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="page-header">
-      <h1>글 작성</h1>
-    </div>
-    <form action="/posts/new" method="post">
+<div class="container">
+  <div class="page-header">
+    <h1>로그인</h1>
+  </div>
+
+  <form action="/doLogin" method="post">
       <div class="page center">
-        <tr>
-          <td>제목</td>
+          <td>email</td>
           <br>
-          <td><input type="text" name="title" >
+          <td><input type="text" name="email">
           </td>
           <br>
         </tr>
-
         <tr>
-          <td>내용</td>
+          <td>비밀번호</td>
           <br>
-          <td><textarea name="contents" cols="30" rows="5"></textarea></td>
+          <td><input type="password" name="password"> </td>
           <br>
         </tr>
-
         <tr text-align="center">
           <br>
           <td colspan="2">
-            <input type="submit" value="등록">
+            <input type="submit" value="로그인">
           </td>
         </tr>
-
       </div>
     </form>
 </div>
+<br/>
+
 </body>
 </html>

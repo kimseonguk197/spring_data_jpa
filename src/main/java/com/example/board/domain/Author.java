@@ -1,7 +1,10 @@
 package com.example.board.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -11,6 +14,7 @@ import java.util.*;
 @Setter
 @Getter
 @Entity
+@Table(name="author")
 public class Author {
 
 //    Entity로 선언을 할때는, pk가 어떤건지를 정확하게 지정해줘야 한다.
@@ -37,10 +41,16 @@ public class Author {
     @Column
     private LocalDateTime createDate;
 
-////    join방법1
-    @OneToMany(mappedBy = "author")
-    @JsonBackReference
+//    OneToMany는 LAZY가 Default, ManyToOne은 EAGER가 Default
+//    mappedBy는 주인이 아니다. 주인은 joincolumn을 사용
+    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Post> posts = new ArrayList<>();
 
-    private int counts;
+    @Transient
+    private int postcounts;
+
+    public void encodePassword(PasswordEncoder passwordEncoder){
+        this.password = passwordEncoder.encode(this.password);
+    }
 }

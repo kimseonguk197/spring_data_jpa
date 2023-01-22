@@ -34,6 +34,7 @@ public class AuthorController {
         return "authors/createAuthorForm";
     }
 //    회원가입시 많은 데이터들이 넘어올때는 post방식을
+
     @PostMapping("/authors/new")
     public String create(AuthorPostForm authorPostForm){
         Author author = new Author();
@@ -44,7 +45,7 @@ public class AuthorController {
         if(authorPostForm.getRole().equals("user")){
             author.setRole(Role.USER);
         }else{
-            author.setRole(Role.ADMIN);
+            author.setRole(Role.WRITER);
         }
 //        회원가입로직
         authorService.create(author);
@@ -56,7 +57,14 @@ public class AuthorController {
     @GetMapping("/authors")
     public String authorList(Model model){
 //        key, value 값으로 넘겨줘야한다.
-        model.addAttribute("authors", authorService.findAll());
+        List<Author> lst = authorService.findAllFetchJoin();
+        List<Author> new_lst = new ArrayList<>();
+        for(Author a : lst){
+            List<Post> posts = postService.findAllByAuthor_Id(a.getId());
+            a.setPostcounts(posts.size());
+            new_lst.add(a);
+        }
+        model.addAttribute("authors", new_lst);
         return "authors/authorList";
     }
 
@@ -66,55 +74,18 @@ public class AuthorController {
 
         return "authors/authorDetail";
     }
-    @GetMapping("authors/api/list")
-    @ResponseBody
-    public List<Author>  apiAuthorList(){
-        List<Author> lstAuthor = authorService.findAll();
-        return lstAuthor;
+
+
+    @GetMapping("/authors/login")
+    public String login(){
+        return "authors/loginPage";
+    }
+    //화면에다가 db에서 조회한 값을 넘겨주려면 어떻게?!
+
+    @GetMapping("/")
+    public String home(){
+        return "home";
     }
 
-
-//    left join
-    @GetMapping("authors/api/findByPostsById")
-    @ResponseBody
-    public Map<Integer, Post> findByPostsById(@RequestParam(value="id")Long id){
-        List<Author> lstAuthor = authorService.findByPostsById(id);
-        Map<Integer, Post> hm = new HashMap<>();
-        int i = 0;
-        for(Author a : lstAuthor){
-            hm.put(i, a.getPosts().get(i));
-            i++;
-        }
-        return hm;
-    }
-
-
-//    전체 join 데이터 구하기
-    @GetMapping("authors/api/findByPosts")
-    @ResponseBody
-    public Map<Integer, Post> findByPosts(){
-        List<Author> lstAuthor = authorService.findAllFetchJoin();
-        Map<Integer, Post> hm = new HashMap<>();
-        int i = 0;
-        for(Author a : lstAuthor){
-//            left조인을 걸면 아래 로직은 out of bounds 날것
-            hm.put(i, a.getPosts().get(i));
-            i++;
-        }
-        return hm;
-    }
-
-    @GetMapping("authors/api/counts")
-    @ResponseBody
-    public List<Author> authorListCounts(){
-        List<Author> lst = authorService.findAll();
-        List<Author> new_lst = new ArrayList<>();
-        for(Author a : lst){
-            List<Post> posts = postService.findAllByAuthor_Id(a.getId());
-            a.setCounts(posts.size());
-            new_lst.add(a);
-        }
-        return new_lst;
-    }
 
 }

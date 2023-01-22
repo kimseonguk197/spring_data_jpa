@@ -7,7 +7,6 @@ public class PostForm {
 
     private String contents;
 
-    private String email;
 
     public String getTitle() {
         return title;
@@ -25,11 +24,4 @@ public class PostForm {
         this.contents = contents;
     }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
 }

@@ -41,4 +41,10 @@ public class PostService {
     public List<Post> findAllByAuthor_Id(Long Author_id){
         return repository.findAllByAuthor_Id(Author_id);
     }
+
+    public List<Post> findAllFetchJoin(){
+        List<Post> result = repository.findAllFetchJoin();
+        return result;
+    }
+
 }
