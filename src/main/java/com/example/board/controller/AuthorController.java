@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 public class AuthorController {
@@ -57,14 +58,21 @@ public class AuthorController {
     @GetMapping("/authors")
     public String authorList(Model model){
 //        key, value 값으로 넘겨줘야한다.
+//        방법1. 전체 조회 후, id별로 post에서 조회해오는 방식
+//        List<Author> lst = authorService.findAll();
+//        List<Author> new_lst = new ArrayList<>();
+//        for(Author a : lst){
+//            List<Post> posts = postService.findAllByAuthor_Id(a.getId());
+//            a.setPostcounts(posts.size());
+//            new_lst.add(a);
+//        }
+
+//        방법2. join을 걸어서 posts가져온뒤 count값 계산하기 : 더 효율적일듯
         List<Author> lst = authorService.findAllFetchJoin();
-        List<Author> new_lst = new ArrayList<>();
-        for(Author a : lst){
-            List<Post> posts = postService.findAllByAuthor_Id(a.getId());
-            a.setPostcounts(posts.size());
-            new_lst.add(a);
+        for(int i =0; i<lst.size(); i++){
+            lst.get(i).setPostcounts(lst.get(i).getPosts().size());
         }
-        model.addAttribute("authors", new_lst);
+        model.addAttribute("authors", lst);
         return "authors/authorList";
     }
 

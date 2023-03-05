@@ -41,10 +41,12 @@ public class Author {
     @Column
     private LocalDateTime createDate;
 
+//    mappedBy를 통해 연관관계의 주인이 누구인지를 결정한다. 즉 fk를 누구에게 설정하느냐는 말이다.
+//    mappedBy의 반대편대상에 fk가 설정된다.
 //    OneToMany는 LAZY가 Default, ManyToOne은 EAGER가 Default
-//    mappedBy는 주인이 아니다. 주인은 joincolumn을 사용
-    @OneToMany(mappedBy = "author", fetch = FetchType.EAGER)
-    @JsonManagedReference
+//    사실 LAZY, Default여부를 떠나서 fetch를 통해 조회를 해오면 2번 조회하러 가지 않는다. 그래서 아래 posts의 경우 조회1번으로 끝난다.
+    @OneToMany(mappedBy = "author")
+//    @JsonManagedReference
     private List<Post> posts = new ArrayList<>();
 
     @Transient
