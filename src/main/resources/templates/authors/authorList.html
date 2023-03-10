@@ -46,7 +46,7 @@
           <td th:text="${author.name}"></td>
           <td th:text="${author.email}"></td>
           <td><a th:href="@{'authors/findById?id=' + ${author.id}}">상세보기</a></td>
-          <td th:text="${author.postcounts}"></td>
+          <td th:text="${#lists.size(author.posts)}"></td>
           <td th:text="${author.role}"></td>
           <td th:text="${author.createDate} ?
                       ${#temporals.format(author.createDate,'yyyy-MM-dd HH:mm')} : ${author.createDate}"></td>

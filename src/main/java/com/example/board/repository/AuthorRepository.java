@@ -23,7 +23,13 @@ public interface AuthorRepository extends JpaRepository<Author, Long> {
 //    jpql방식
     @Query("select distinct a from Author a join fetch a.posts where a.id = :id")
     List<Author> findAllFetchJoinById(@Param("id")Long id);
-    @Query("select distinct a from Author a left join fetch a.posts")
+
+//    distinct를 하는 이유 : a는 1건인데, post는 여러건이라 join을 걸면 a도 다 건처럼 조회가 됨
+//    join이 아니라 fetch join을 하는 이유
+//    entity의 연관관계를 무시하고, select절에 명시된 내용만을 조회
+//    그러므로, 그러므로, 지연로딩을 설정했다 하더라도, fetch join이 걸리면 join을 걸어 조회한다
+//    그러나, join만을 하게 되면 one to many + lazy의 설정이 적용되어, 단건의 join으로 조회해오지 않고 이후 사용시에 N+1의 조회가 나가는 것.
+    @Query("select distinct a from Author a left join a.posts")
     List<Author> findAllFetchJoin();
 
 }
