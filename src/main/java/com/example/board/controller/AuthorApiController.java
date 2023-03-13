@@ -1,24 +1,14 @@
 package com.example.board.controller;
 
 import com.example.board.domain.Author;
-import com.example.board.domain.Post;
-import com.example.board.domain.Role;
 import com.example.board.service.AuthorService;
 import com.example.board.service.PostService;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
-@Controller
+@RestController
 public class AuthorApiController {
 
     private final AuthorService authorService;
@@ -29,35 +19,44 @@ public class AuthorApiController {
         this.postService = postService;
     }
 
-    @GetMapping("authors/api/list")
-    @ResponseBody
-    public List<Author>  apiAuthorList(){
-        List<Author> lstAuthor = authorService.apiAuthorList(Role.WRITER);
-        return lstAuthor;
-    }
-
-    @GetMapping("alluser")
-    @ResponseBody
-    public List<Author> alluser(){
-        List<Author> lstAuthor = authorService.findAll();
-        return lstAuthor;
-    }
 
 //    left join
     @GetMapping("authors/api/findByPostsById")
-    @ResponseBody
     public List<Author> findByPostsById(@RequestParam(value="id")Long id){
         List<Author> lstAuthor = authorService.findByPostsById(id);
         return lstAuthor;
     }
 
 
-//    전체 join 데이터 구하기
+
+//    fetch조인후 AuthorResponse로 return
     @GetMapping("authors/api/findByPosts")
-    @ResponseBody
-    public List<Author> findByPosts(){
+    public List<AuthorResponseDto> findByPosts(){
         List<Author> lstAuthor = authorService.findAllFetchJoin();
+        return lstAuthor.stream().map(this::convertToDto).collect(Collectors.toList());
+    }
+
+
+    //    Author객체로 return하게 되면 순환참조 에러가 발생할것.
+    @GetMapping("alluser")
+    public List<Author> alluser(){
+        List<Author> lstAuthor = authorService.findAll();
         return lstAuthor;
+    }
+
+
+//    아래와 같이 convert 메서드를 만들거나 modelmapper 라이브러리를 사용해 convert하여도 된다.
+//    https://www.baeldung.com/entity-to-and-from-dto-for-a-java-spring-application
+//    위 블로그 참고
+    private AuthorResponseDto convertToDto(Author author) {
+        AuthorResponseDto authorResponse = new AuthorResponseDto();
+        authorResponse.setId(author.getId());
+        authorResponse.setName(author.getName());
+        authorResponse.setEmail(author.getEmail());
+        authorResponse.setPassword(author.getPassword());
+        authorResponse.setRole(author.getRole());
+        authorResponse.setCreateDate(author.getCreateDate());
+        return authorResponse;
     }
 
 

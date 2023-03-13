@@ -65,8 +65,6 @@ public class AuthorController {
 
 //        방법2. join을 걸어서 posts가져온뒤 count값 계산하기 : 더 효율적일듯
         List<Author> lst = authorService.findAllFetchJoin();
-
-
         model.addAttribute("authors", lst);
         return "authors/authorList";
     }
